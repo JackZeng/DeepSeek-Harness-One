@@ -1,0 +1,206 @@
+name: Ecosystem Autopilot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/ecosystem-autopilot.yml'
+  schedule:
+    - cron: '30 23 * * *'
+      timezone: 'Asia/Manila'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Discovery only, or one guarded product evolution
+        required: true
+        default: evolve
+        type: choice
+        options:
+          - discover
+          - evolve
+      candidate:
+        description: Optional exact owner/repository to inspect from the eligible results
+        required: false
+        type: string
+      merge:
+        description: Merge the validated pull request automatically
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: read
+
+concurrency:
+  group: deepseek-harness-one-ecosystem-autopilot
+  cancel-in-progress: false
+
+jobs:
+  evolve:
+    name: Discover, evolve, verify and integrate
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_TOKEN: ${{ github.token }}
+      AUTOPILOT_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'evolve' }}
+      AUTOPILOT_CANDIDATE: ${{ github.event_name == 'workflow_dispatch' && inputs.candidate || '' }}
+      DSH_ONE_EVOLVER_API_KEY: ${{ secrets.DSH_ONE_EVOLVER_API_KEY }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      DSH_ONE_EVOLVER_BASE_URL: ${{ vars.DSH_ONE_EVOLVER_BASE_URL || 'https://api.deepseek.com' }}
+      DSH_ONE_EVOLVER_MODEL: ${{ vars.DSH_ONE_EVOLVER_MODEL || 'deepseek-v4-pro' }}
+    steps:
+      - name: Check out main with history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Create isolated automation branch
+        id: branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="automation/ecosystem-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git config user.name "deepseek-harness-one[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          echo "name=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Discover projects and prepare at most one bounded improvement
+        id: autopilot
+        run: node ./scripts/ecosystem-autopilot.mjs
+
+      - name: Enforce autonomous diff policy
+        run: node ./scripts/verify-autopilot-diff.mjs --working-tree
+
+      - name: Validate on Node.js 22
+        run: |
+          npm run check
+          npm run test:ci
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validate on Node.js 24
+        run: |
+          npm run check
+          npm run test:ci
+
+      - name: Build production container
+        run: docker build -t deepseek-harness-one:ecosystem-autopilot .
+
+      - name: Capture audit artifact outside the repository
+        if: always()
+        shell: bash
+        run: |
+          artifact_dir="${RUNNER_TEMP}/ecosystem-autopilot"
+          mkdir -p "$artifact_dir"
+          git diff --binary HEAD > "$artifact_dir/proposed.patch" || true
+          cp docs/ecosystem/latest.md "$artifact_dir/latest.md" 2>/dev/null || true
+          cp config/ecosystem-autopilot-state.json "$artifact_dir/state.json" 2>/dev/null || true
+
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecosystem-autopilot-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/ecosystem-autopilot
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Commit validated result
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -A
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Ecosystem autopilot: nightly evolution"
+          git push --set-upstream origin "${{ steps.branch.outputs.name }}"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Create audited pull request
+        if: steps.commit.outputs.changed == 'true'
+        id: pull
+        shell: bash
+        env:
+          SELECTED_REPOSITORY: ${{ steps.autopilot.outputs.selected_repository }}
+          SELECTED_TRAIT: ${{ steps.autopilot.outputs.selected_trait }}
+          INTEGRATION_APPLIED: ${{ steps.autopilot.outputs.integration_applied }}
+        run: |
+          set -euo pipefail
+          {
+            echo "## Nightly ecosystem evolution"
+            echo
+            echo "- Candidate repository: \`${SELECTED_REPOSITORY}\`"
+            echo "- Selected trait: ${SELECTED_TRAIT}"
+            echo "- Product code integration prepared: \`${INTEGRATION_APPLIED}\`"
+            echo "- Schedule: 23:30 Asia/Manila"
+            echo
+            echo "The complete ranked report and decision are in \`docs/ecosystem/latest.md\`."
+            echo
+            echo "### Gates completed before this pull request"
+            echo
+            echo "- protected-path and change-budget policy"
+            echo "- untrusted README prompt-injection boundary"
+            echo "- credential and unsafe-capability scan"
+            echo "- independent product-direction review when code was generated"
+            echo "- Node.js 22 checks and tests"
+            echo "- Node.js 24 checks and tests"
+            echo "- Docker image build"
+          } > /tmp/ecosystem-pr.md
+          url=$(gh pr create \
+            --base main \
+            --head "${{ steps.branch.outputs.name }}" \
+            --title "Ecosystem autopilot: nightly evolution" \
+            --body-file /tmp/ecosystem-pr.md)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Merge validated pull request
+        if: >-
+          steps.pull.outputs.url != '' &&
+          (github.event_name == 'schedule' || github.event_name == 'push' || inputs.merge == true)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh pr merge "${{ steps.pull.outputs.url }}" \
+            --squash \
+            --delete-branch \
+            --subject "Ecosystem autopilot: nightly evolution"; then
+            echo "::warning::Automatic merge was blocked; the validated pull request remains open."
+            gh pr comment "${{ steps.pull.outputs.url }}" \
+              --body "All Autopilot gates passed, but repository merge policy blocked automatic merge. This pull request has been left open for review." || true
+          fi
+
+      - name: Report controlled failure
+        if: failure()
+        shell: bash
+        run: |
+          set +e
+          title="[Autopilot] Nightly ecosystem run failed (${GITHUB_RUN_ID})"
+          body=$(printf '%s\n\n%s\n%s\n%s\n\n%s\n' \
+            'The guarded ecosystem workflow failed without intentionally modifying main.' \
+            "- Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            "- Branch: ${{ steps.branch.outputs.name }}" \
+            "- Mode: ${AUTOPILOT_MODE}" \
+            'Inspect the uploaded audit artifact and job logs before retrying.')
+          gh issue create --title "$title" --body "$body" >/dev/null 2>&1 || true
+          if [[ -n "${{ steps.pull.outputs.url }}" ]]; then
+            gh pr close "${{ steps.pull.outputs.url }}" --delete-branch >/dev/null 2>&1 || true
+          elif [[ -n "${{ steps.branch.outputs.name }}" ]]; then
+            git push origin --delete "${{ steps.branch.outputs.name }}" >/dev/null 2>&1 || true
+          fi

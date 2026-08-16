@@ -37,7 +37,6 @@ jobs:
           echo 'db283e0d92251775699e3650b906b3353a4182a6da1850e616b39d6cdbc8e547  '"$payload_tar" | sha256sum --check --strict
           tar -xzf "$payload_tar"
           rm -f .github/ecosystem-autopilot-payload.part*
-          rm -f .github/workflows/bootstrap-ecosystem-autopilot.yml
 
       - uses: actions/setup-node@v4
         with:
