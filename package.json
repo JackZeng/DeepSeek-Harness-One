@@ -18,9 +18,13 @@
     "doctor": "node ./bin/dsh-one.mjs doctor",
     "setup": "node ./bin/dsh-one.mjs setup",
     "profile": "node ./bin/dsh-one.mjs profile",
+    "ecosystem:discover": "node ./scripts/ecosystem-autopilot.mjs --mode discover",
+    "ecosystem:evolve": "node ./scripts/ecosystem-autopilot.mjs --mode evolve",
+    "ecosystem:verify": "node ./scripts/verify-autopilot-diff.mjs --working-tree",
     "check": "node ./scripts/check.mjs",
     "test": "node --test --test-reporter=spec",
-    "test:ci": "node --test"
+    "test:ci": "node --test",
+    "ecosystem:autopilot": "node ./scripts/ecosystem-autopilot.mjs"
   },
   "keywords": [
     "deepseek",

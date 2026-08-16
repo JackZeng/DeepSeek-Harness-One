@@ -55,6 +55,12 @@ This intent classifier is a usability safety net, not a complete policy engine. 
 - Automatic installation is disabled by default.
 - Guided integrations are never converted into arbitrary shell execution.
 
+## Ecosystem Autopilot
+
+The nightly ecosystem workflow treats all external repository metadata and README text as untrusted input. It does not clone, install, import or execute candidate code. Model-generated changes are limited to an allowlist of product paths and are rejected if they introduce protected-path edits, excessive scope, missing regression tests, credential-shaped material, new network or process capabilities, dynamic code execution, remote scripts, binary patches, symlinks or submodules.
+
+The workflow can append at most one new optional integration registry entry and cannot rewrite existing entries. Product changes are prepared on an isolated branch, reviewed separately, validated on Node.js 22 and 24, and built as a Docker image before a pull request is eligible for merge. Missing model credentials degrade to discovery-only behavior.
+
 ## Local security scan
 
 The built-in scan checks a bounded set of metadata:

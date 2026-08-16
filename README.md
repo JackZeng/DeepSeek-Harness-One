@@ -187,6 +187,16 @@ The local API is intentionally small and inspectable:
 
 See [Architecture](docs/ARCHITECTURE.md) for event and lifecycle contracts.
 
+## Nightly ecosystem evolution
+
+One includes a guarded GitHub Actions workflow that runs every day at **23:30 Asia/Manila**. It searches for new and updated DeepSeek Harness projects, ranks their useful traits, and may prepare at most one small independent improvement while preserving One's workspace/task/artifact/memory product model.
+
+The workflow never installs or executes candidate repositories. README content is treated as untrusted evidence; generated changes are limited by protected paths, change budgets, secret and unsafe-capability scans, an independent product review, Node.js 22/24 tests and a Docker build. Successful changes go through an isolated automation branch and pull request before merge.
+
+Discovery works with the built-in `GITHUB_TOKEN`. To enable model-assisted selection and implementation, add `DSH_ONE_EVOLVER_API_KEY` or `DEEPSEEK_API_KEY` as a repository secret. Without a key, the nightly task still updates the ecosystem report without modifying product code.
+
+See [Ecosystem Autopilot](docs/ECOSYSTEM_AUTOPILOT.md) and the latest [Ecosystem Report](docs/ecosystem/latest.md).
+
 ## Validation
 
 ```bash

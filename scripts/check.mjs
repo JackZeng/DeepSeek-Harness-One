@@ -6,7 +6,13 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 const sourceRoots = ['bin', 'src', 'scripts', 'tests', 'public'];
 const javascript = [];
-const jsonFiles = ['package.json', 'config/integrations.json', 'public/manifest.webmanifest'];
+const jsonFiles = [
+  'package.json',
+  'config/integrations.json',
+  'config/ecosystem-autopilot.json',
+  'config/ecosystem-autopilot-state.json',
+  'public/manifest.webmanifest',
+];
 
 for (const directory of sourceRoots) await collect(path.join(root, directory));
 for (const file of javascript) await runNodeCheck(file);

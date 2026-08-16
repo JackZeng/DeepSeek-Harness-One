@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "timezone": "Asia/Manila",
+  "schedule": {
+    "cron": "30 23 * * *",
+    "timezone": "Asia/Manila"
+  },
+  "searchQueries": [
+    "topic:dsh-plugin archived:false fork:false",
+    "topic:deepseek-harness archived:false fork:false",
+    "\"deepseek-harness\" in:name,description,readme archived:false fork:false",
+    "\"DeepSeek Harness\" in:readme archived:false fork:false",
+    "dsh in:name topic:ai-agent archived:false fork:false"
+  ],
+  "excludedRepositories": [
+    "JackZeng/DeepSeek-Harness-One",
+    "deepseek-ai/deepseek-harness"
+  ],
+  "allowedLicenses": [
+    "MIT",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "MPL-2.0"
+  ],
+  "maxCandidates": 12,
+  "maxReadmeCharacters": 12000,
+  "maxModelContextCharacters": 110000,
+  "maxIntegrationsPerRun": 1,
+  "maxPatchFiles": 8,
+  "maxPatchAdditions": 500,
+  "maxPatchDeletions": 200,
+  "requireTestsForCode": true,
+  "minimumModelScore": 45,
+  "allowedPatchRoots": [
+    "src/core/",
+    "public/",
+    "tests/",
+    "docs/ecosystem/",
+    "config/integrations.json",
+    "config/ecosystem-autopilot-state.json"
+  ],
+  "protectedPaths": [
+    ".github/workflows/ecosystem-autopilot.yml",
+    "AGENTS.md",
+    "docs/ARCHITECTURE.md",
+    "docs/PRODUCT_PRINCIPLES.md",
+    "docs/SECURITY.md",
+    "SECURITY.md",
+    "LICENSE",
+    "package.json",
+    "package-lock.json",
+    "scripts/ecosystem-autopilot.mjs",
+    "scripts/verify-autopilot-diff.mjs",
+    "src/ecosystem/autopilot-policy.mjs",
+    "config/ecosystem-autopilot.json",
+    "src/core/event-store.mjs",
+    "src/core/memory-service.mjs",
+    "src/core/proof-service.mjs",
+    "src/core/security-service.mjs",
+    "src/core/task-reducer.mjs",
+    "bin/dsh-one.mjs",
+    "src/runtime/dsh-runtime.mjs",
+    "src/runtime/process-utils.mjs",
+    "src/runtime/runtime-manager.mjs",
+    "src/http/server.mjs",
+    "src/http/http-utils.mjs",
+    "src/core/task-service.mjs",
+    "src/core/utils.mjs",
+    "src/integrations/extension-service.mjs",
+    "public/sw.js"
+  ],
+  "housekeepingPaths": [
+    "docs/ecosystem/latest.md",
+    "docs/ecosystem/ledger.jsonl",
+    "config/ecosystem-autopilot-state.json"
+  ]
+}

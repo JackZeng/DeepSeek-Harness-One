@@ -8,6 +8,7 @@
 - Workspaces, artifacts, supervised memory, risk approval and proof.
 - PWA control plane and local API.
 - Curated extension registry.
+- Guarded nightly ecosystem discovery and bounded evolution workflow.
 
 ## 0.2 — Native DSH event bridge
 
@@ -55,3 +56,10 @@
 - Security and recovery behavior must be explicit.
 - Claims of completion require reproducible evidence.
 - New integrations must preserve upstream ownership and license boundaries.
+
+## Continuous ecosystem curation
+
+- [x] Nightly GitHub discovery and trait ranking at 23:30 Asia/Manila.
+- [x] Untrusted-source fencing, license gates and bounded audit ledger.
+- [x] Optional one-trait model-assisted implementation with protected paths, independent review, tests and container validation.
+- [ ] Add repository-level policy analytics for recurring candidate quality and false-positive tuning.
