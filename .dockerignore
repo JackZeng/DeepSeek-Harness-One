@@ -1,0 +1,7 @@
+.git
+.github
+.dsh-one
+node_modules
+coverage
+*.log
+docs/assets/*.png

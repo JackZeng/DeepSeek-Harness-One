@@ -1,0 +1,15 @@
+services:
+  dsh-one:
+    build: .
+    environment:
+      DSH_ONE_DEMO: "true"
+      DSH_ONE_HOST: "0.0.0.0"
+      DSH_ONE_OPEN_BROWSER: "false"
+    ports:
+      - "127.0.0.1:3210:3210"
+    volumes:
+      - dsh-one-data:/data
+    restart: unless-stopped
+
+volumes:
+  dsh-one-data:

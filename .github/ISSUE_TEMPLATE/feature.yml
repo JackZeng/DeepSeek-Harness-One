@@ -1,0 +1,25 @@
+name: Product proposal
+description: Propose an improvement that fits the One product model.
+title: "[Proposal]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Describe the work problem, not only a technical mechanism.
+    validations:
+      required: true
+  - type: textarea
+    id: experience
+    attributes:
+      label: Desired experience
+      description: Explain what the user should see and understand.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Why One, rather than an upstream plugin?
+    validations:
+      required: true

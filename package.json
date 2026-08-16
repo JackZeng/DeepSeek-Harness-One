@@ -1,0 +1,42 @@
+{
+  "name": "deepseek-harness-one",
+  "version": "0.1.0",
+  "description": "A local-first, product-grade control plane for DeepSeek Harness: workspaces, durable tasks, memory, verification, security and curated extensions.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.16.0"
+  },
+  "bin": {
+    "dsh-one": "./bin/dsh-one.mjs"
+  },
+  "scripts": {
+    "start": "node ./bin/dsh-one.mjs serve",
+    "dev": "node --watch ./bin/dsh-one.mjs serve --demo",
+    "demo": "node ./bin/dsh-one.mjs demo",
+    "doctor": "node ./bin/dsh-one.mjs doctor",
+    "setup": "node ./bin/dsh-one.mjs setup",
+    "profile": "node ./bin/dsh-one.mjs profile",
+    "check": "node ./scripts/check.mjs",
+    "test": "node --test --test-reporter=spec",
+    "test:ci": "node --test"
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "agent",
+    "local-first",
+    "workflow",
+    "memory",
+    "guardrails"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JackZeng/DeepSeek-Harness-One.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JackZeng/DeepSeek-Harness-One/issues"
+  },
+  "homepage": "https://github.com/JackZeng/DeepSeek-Harness-One#readme"
+}

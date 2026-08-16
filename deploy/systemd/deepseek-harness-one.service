@@ -1,0 +1,20 @@
+[Unit]
+Description=DeepSeek Harness One local control plane
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Projects/DeepSeek-Harness-One
+ExecStart=/usr/bin/env node ./bin/dsh-one.mjs serve --no-open
+Environment=DSH_ONE_HOST=127.0.0.1
+Environment=DSH_ONE_PORT=3210
+Environment=DSH_ONE_DATA_DIR=%h/.dsh-one
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=%h/.dsh-one %h/.dsh
+
+[Install]
+WantedBy=default.target

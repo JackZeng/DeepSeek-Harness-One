@@ -1,0 +1,162 @@
+[
+  {
+    "id": "deepseek-harness",
+    "name": "DeepSeek Harness Core",
+    "category": "core",
+    "tier": "required",
+    "description": "Official agent kernel, profiles, session log, tools, approvals, jobs and subagents.",
+    "repository": "deepseek-ai/deepseek-harness",
+    "license": "MIT",
+    "permissions": ["workspace-read", "workspace-write", "process-execution"],
+    "install": { "kind": "external", "commands": ["npx -y @deepseek-ai/dsh web"] }
+  },
+  {
+    "id": "dsh-mnemon",
+    "name": "Supervised Memory",
+    "category": "memory",
+    "tier": "recommended",
+    "description": "Three-layer local memory with explicit candidates, managed documents and cross-agent memory spaces.",
+    "repository": "omdsh-dev/dsh-mnemon",
+    "license": "MIT",
+    "permissions": ["dsh-home-read", "dsh-home-write", "local-process"],
+    "install": { "kind": "dsh-plugin", "profile": "web", "source": "dsh-mnemon" }
+  },
+  {
+    "id": "dsh-workflow",
+    "name": "Durable Workflows",
+    "category": "execution",
+    "tier": "recommended",
+    "description": "Named, resumable and auditable multi-agent workflows with artifacts, budgets and evidence.",
+    "repository": "dsh-external/dsh_workflow",
+    "license": "MIT",
+    "permissions": ["workspace-read", "workspace-write", "subagents", "background-jobs"],
+    "install": { "kind": "dsh-plugin", "profile": "web", "source": "github:dsh-external/dsh_workflow#main" }
+  },
+  {
+    "id": "dsh-tier-router",
+    "name": "Automatic Model Routing",
+    "category": "execution",
+    "tier": "recommended",
+    "description": "Strong-model planning and review, lower-cost execution, failure escalation and high-impact guards.",
+    "repository": "BruceLanLan/dsh-tier-router",
+    "license": "MIT",
+    "permissions": ["model-routing", "tool-preflight", "subagents"],
+    "install": {
+      "kind": "guided",
+      "commands": [
+        "dsh plugin --profile web add github:BruceLanLan/dsh-tier-router",
+        "Copy the included tiered agent preset into $DSH_HOME/.agent-presets and select it for new sessions."
+      ]
+    }
+  },
+  {
+    "id": "dsh-proof",
+    "name": "Independent Acceptance",
+    "category": "quality",
+    "tier": "recommended",
+    "description": "A read-only verifier checks whether a task is actually complete before the turn closes.",
+    "repository": "EvilIrving/dsh-proof",
+    "license": "MIT",
+    "permissions": ["workspace-read", "subagents"],
+    "install": { "kind": "dsh-plugin", "profile": "headless", "source": "github:EvilIrving/dsh-proof" }
+  },
+  {
+    "id": "openguardrails",
+    "name": "Runtime Guardrails",
+    "category": "security",
+    "tier": "recommended",
+    "description": "Policy decisions before model calls and before tool execution, with optional automatic low-risk approval.",
+    "repository": "openguardrails/openguardrails",
+    "license": "Apache-2.0",
+    "permissions": ["model-request-metadata", "model-response-metadata", "network:configured-runtime"],
+    "install": { "kind": "dsh-plugin", "profile": "web", "source": "@openguardrails/dsh" }
+  },
+  {
+    "id": "dsh-security-audit",
+    "name": "Local Security Audit",
+    "category": "security",
+    "tier": "recommended",
+    "description": "Read-only checks for credentials metadata, plugin sources, filesystem permissions, sessions and network exposure.",
+    "repository": "omdsh-dev/dsh-security-audit",
+    "license": "MIT",
+    "permissions": ["dsh-home-read", "network-config-read"],
+    "install": { "kind": "dsh-plugin", "profile": "web", "source": "github:omdsh-dev/dsh-security-audit" }
+  },
+  {
+    "id": "dsh-market",
+    "name": "Curated Extension Market",
+    "category": "ecosystem",
+    "tier": "recommended",
+    "description": "Discover, inspect, install, update and remove curated DSH extensions from one place.",
+    "repository": "dsh-market/dsh-market",
+    "license": "MIT",
+    "permissions": ["profile-package-management", "network:github", "network:npm"],
+    "install": { "kind": "dsh-plugin", "profile": "web", "source": "dshmarket" }
+  },
+  {
+    "id": "modlens",
+    "name": "Automatic Vision Bridge",
+    "category": "capability",
+    "tier": "recommended",
+    "description": "Adds structured visual evidence to text-only DeepSeek routes and supports direct image paste.",
+    "repository": "liustack/modlens",
+    "license": "MIT",
+    "permissions": ["image-read", "network:configured-vision-provider"],
+    "install": { "kind": "dsh-plugin", "profile": "web", "source": "@liustack/modlens" }
+  },
+  {
+    "id": "agentrq",
+    "name": "Team Mission Control",
+    "category": "team",
+    "tier": "optional",
+    "description": "Human-agent task queues, remote replies, attachments, approvals and real-time workspace delivery.",
+    "repository": "agentrq/agentrq",
+    "license": "Apache-2.0",
+    "permissions": ["network:agentrq-workspace", "task-read", "task-write"],
+    "install": { "kind": "dsh-plugin", "profile": "agentrq-workspace", "source": "@agentrq/dsh-plugin-agentrq" }
+  },
+  {
+    "id": "mirage",
+    "name": "Enterprise Data Fabric",
+    "category": "enterprise",
+    "tier": "optional",
+    "description": "Unified virtual filesystem over cloud drives, messaging, object stores, databases and business tools.",
+    "repository": "strukto-ai/mirage",
+    "license": "Apache-2.0",
+    "permissions": ["external-data-sources", "configured-credentials"],
+    "install": { "kind": "external", "commands": ["npm install @struktoai/mirage-node @struktoai/mirage-agents"] }
+  },
+  {
+    "id": "open-design",
+    "name": "Artifact Studio",
+    "category": "studio",
+    "tier": "optional",
+    "description": "Editable prototypes, dashboards, presentations, images and video governed by a design system.",
+    "repository": "nexu-io/open-design",
+    "license": "Apache-2.0",
+    "permissions": ["workspace-read", "workspace-write", "model-access"],
+    "install": { "kind": "external", "commands": ["Install Open Design, then run: od agent setup deepseek-harness"] }
+  },
+  {
+    "id": "archify",
+    "name": "Architecture Maps",
+    "category": "quality",
+    "tier": "optional",
+    "description": "Verified, interactive architecture and workflow maps with typed source and change comparison.",
+    "repository": "tt-a1i/archify",
+    "license": "MIT",
+    "permissions": ["workspace-read", "artifact-write"],
+    "install": { "kind": "dsh-plugin", "profile": "web", "source": "@tt-a1i/archify-dsh@0.1.0" }
+  },
+  {
+    "id": "brooks-lint",
+    "name": "Engineering Review",
+    "category": "quality",
+    "tier": "optional",
+    "description": "Traceable architecture, code-health, technical-debt and test-quality review workflows.",
+    "repository": "hyhmrright/brooks-lint",
+    "license": "MIT",
+    "permissions": ["workspace-read", "optional-workspace-write"],
+    "install": { "kind": "guided", "commands": ["Install the brooks-lint skill for DeepSeek Harness from hyhmrright/brooks-lint."] }
+  }
+]

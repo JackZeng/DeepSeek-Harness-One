@@ -1,0 +1,12 @@
+{
+  "name": "DeepSeek Harness One",
+  "short_name": "DSH One",
+  "description": "A local-first control plane for durable DeepSeek Harness work.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "icons": [
+    { "src": "/mark.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
