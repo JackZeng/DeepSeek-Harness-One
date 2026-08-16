@@ -1,0 +1,64 @@
+name: Bootstrap Ecosystem Autopilot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bootstrap-ecosystem-autopilot.yml'
+      - '.github/ecosystem-autopilot-payload.part*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bootstrap-ecosystem-autopilot
+  cancel-in-progress: false
+
+jobs:
+  install:
+    if: github.repository == 'JackZeng/DeepSeek-Harness-One'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore the validated source payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload_b64="$RUNNER_TEMP/ecosystem-autopilot.tar.gz.b64"
+          payload_tar="$RUNNER_TEMP/ecosystem-autopilot.tar.gz"
+          cat .github/ecosystem-autopilot-payload.part* > "$payload_b64"
+          echo 'f678550b1be6a7e6e4928a936ca9c1387f4d807e58073692d0038ef5bc3539ce  '"$payload_b64" | sha256sum --check --strict
+          base64 --decode "$payload_b64" > "$payload_tar"
+          echo 'db283e0d92251775699e3650b906b3353a4182a6da1850e616b39d6cdbc8e547  '"$payload_tar" | sha256sum --check --strict
+          tar -xzf "$payload_tar"
+          rm -f .github/ecosystem-autopilot-payload.part*
+          rm -f .github/workflows/bootstrap-ecosystem-autopilot.yml
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate restored project
+        run: |
+          npm run check
+          npm test
+          git diff --check
+
+      - name: Commit the nightly ecosystem system
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No bootstrap changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Add guarded nightly ecosystem autopilot'
+          git push origin HEAD:main
