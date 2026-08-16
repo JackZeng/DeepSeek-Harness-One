@@ -1,8 +1,44 @@
 # DeepSeek Harness One
 
-> A local-first, product-grade control plane for DeepSeek Harness: durable workspaces, resumable tasks, supervised memory, automatic model routing, independent delivery verification, security posture, artifacts, and a curated extension layer.
+[中文简介](#中文简介) · [English Introduction](#english-introduction)
 
-DeepSeek Harness One is not a fork that rewrites the official agent loop. It keeps the official DeepSeek Harness as the execution kernel and adds the product layer that turns a powerful developer harness into a coherent work system.
+## 中文简介
+
+**DeepSeek Harness One = 官方 DeepSeek Harness 内核 + 面向真实工作的 Agent OS 产品层。**
+
+它不是重写 DeepSeek Harness，而是在保留原版插件化 Agent 内核、工具、Sandbox、Session 与扩展能力的基础上，把“会话型 AI Agent”升级为一个**可以长期工作、持续记忆、可靠交付结果的本地优先任务系统**。
+
+它的核心优势很简单：
+
+- **任务，而不只是聊天**：任务可排队、暂停、恢复、取消、重试，并能在进程重启后恢复状态。
+- **交付，而不只是回答**：结果以可检查的 Artifact 保存，并在完成前经过独立 Proof 验证。
+- **记忆，但由你控制**：重要信息先成为候选记忆，只有用户确认后才进入长期记忆。
+- **自动选择合适的模型**：通过 `fast / auto / deep` 路由，让强模型负责规划与审查，经济模型负责常规执行。
+- **本地优先、安全、可扩展**：默认只在本机运行，提供风险审批、Secret Redaction、安全检查，并兼容 DeepSeek Harness 的插件生态。
+
+用户只需要理解四个概念：**Workspace、Task、Artifact、Memory**。其余 Provider、Profile、模型路由、验证 Agent、Guardrails 与插件安装，都尽量留在产品幕后。
+
+> **一句话：把 DeepSeek Harness 从一个优秀的 Agent Harness，变成一个真正能把事情持续做完并证明已经做完的 Agent 工作系统。**
+
+## English Introduction
+
+**DeepSeek Harness One = the official DeepSeek Harness kernel + a product-grade Agent OS layer for real work.**
+
+It does not rewrite DeepSeek Harness. Instead, it preserves the original plugin-based agent kernel, tools, sandbox, sessions, and extension model, then upgrades the experience from a conversational agent into a **local-first work system that can run durable tasks, build supervised memory, and deliver verifiable results**.
+
+Its core advantages are straightforward:
+
+- **Tasks, not just chats** — queue, pause, resume, cancel, retry, and recover work across process restarts.
+- **Deliverables, not just answers** — results are stored as inspectable Artifacts and independently verified before completion.
+- **Memory under user control** — useful facts become memory candidates first and are persisted only after explicit approval.
+- **Automatic model routing** — `fast / auto / deep` policies use stronger models for planning and review while economical models handle routine execution.
+- **Local-first, secure, and extensible** — loopback by default, with approval gates, secret redaction, security checks, and compatibility with the DeepSeek Harness plugin ecosystem.
+
+The user-facing model stays intentionally small: **Workspace, Task, Artifact, Memory**. Providers, profiles, routing, verification agents, guardrails, and extension installation remain behind the product layer whenever possible.
+
+> **In one sentence: DeepSeek Harness One turns a powerful agent harness into a durable work system that keeps working until it can deliver—and prove—the result.**
+
+---
 
 The user-facing model is intentionally small:
 
